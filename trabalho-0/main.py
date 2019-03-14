@@ -31,13 +31,15 @@ def main(argv):
     # gama will be a numpy array
     gama = np.array([0.25, 0.5, 2.0, 4.0])
 
+    # Create blocks of gama's size of images, in other words, an array of shape (gama's size, number_of_images, width,
+    # height)
     work_images = np.repeat(images[np.newaxis, :, :, :], gama.size, axis=0)
 
     # First step, convert the images from a [0, 255] range of uint8 to a [0, 1] range of float64
     work_images = work_images / 255.0
 
     # Second step, apply the equation B = A^(1/gama)
-    work_images = np.power(work_images, 1/gama[:])
+    work_images = work_images ** (1 / gama[:, None, None, None])
 
     # Final step, convert the image back to a [0, 255] range of uint8
     work_images = work_images * 255.0
@@ -49,9 +51,14 @@ def main(argv):
         work_path.mkdir()
 
     # Save the images
-    [imageio.imsave(work_path / img_name / "gama-" + str(gama), img) for img_name, img, gama in zip([filenames_last.split('/')[-1] for filenames_last in filenames]
-                                                                                          , [img for img in work_images]
-                                                                                          , itertools.repeat(gama, images.size))]
+    [imageio.imsave(work_path / ("gama-" + str(gama) + "-" + img_name), img) for img_name, img, gama in zip(
+                                                                                            np.tile(np.array([filenames_last.split('/')[-1] for filenames_last in filenames]), gama.size)
+                                                                                          , work_images.reshape((20, 512, 512))
+                                                                                          , np.repeat(gama, images.shape[0])
+                                                                                                     )
+     ]
+
+    # End of Problem 1.1
 
     pass
 
