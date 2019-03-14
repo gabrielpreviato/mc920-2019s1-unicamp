@@ -27,8 +27,7 @@ def main(argv):
 
     # Problem 1.1
     # Bright adjustment
-    # Arguments: gama
-    # gama will be a numpy array
+    # Arguments: gama (np.array)
     gama = np.array([0.25, 0.5, 2.0, 4.0])
 
     # Create blocks of gama's size of images, in other words, an array of shape (gama's size, number_of_images, width,
@@ -59,6 +58,36 @@ def main(argv):
      ]
 
     # End of Problem 1.1
+
+    # Problem 1.2
+    # Bits planes
+    # Arguments: bits (np.array)
+    bits = np.array([0, 1, 2, 3, 4, 5, 6, 7])
+
+    # Create blocks of gama's size of images, in other words, an array of shape (gama's size, number_of_images, width,
+    # height)
+    work_images = np.repeat(images[np.newaxis, :, :, :], bits.size, axis=0)
+
+    # First step, create a mask to segment the image's bits planes
+    bits_mask = np.left_shift(1, bits)
+
+    # Final step, do bitwise_and between the images and the mask
+    binary_images = np.bitwise_and(work_images, bits_mask[:, None, None, None])
+
+    # Path operations to create image directory if it doesn't exist
+    work_path = file_path / "gen_images_1.2"
+    if not work_path.is_dir():
+        work_path.mkdir()
+
+    # Save the images
+    [imageio.imsave(work_path / ("bit-" + str(bit) + "-" + img_name), img) for img_name, img, bit in zip(
+        np.tile(np.array([filenames_last.split('/')[-1] for filenames_last in filenames]), bits.size)
+        , binary_images.reshape((binary_images.shape[0] * binary_images.shape[1], 512, 512))
+        , np.repeat(bits, images.shape[0])
+    )
+     ]
+
+    # End of problem 1.2
 
     pass
 
