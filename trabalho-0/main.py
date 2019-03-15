@@ -73,6 +73,7 @@ def main(argv):
 
     # Final step, do bitwise_and between the images and the mask
     binary_images = np.bitwise_and(work_images, bits_mask[:, None, None, None])
+    binary_images = np.where(binary_images > 0, 255, binary_images)
 
     # Path operations to create image directory if it doesn't exist
     work_path = file_path / "gen_images_1.2"
@@ -82,12 +83,17 @@ def main(argv):
     # Save the images
     [imageio.imsave(work_path / ("bit-" + str(bit) + "-" + img_name), img) for img_name, img, bit in zip(
         np.tile(np.array([filenames_last.split('/')[-1] for filenames_last in filenames]), bits.size)
-        , binary_images.reshape((binary_images.shape[0] * binary_images.shape[1], 512, 512))
+        , binary_images.reshape((binary_images.shape[0] * binary_images.shape[1], binary_images.shape[2], binary_images.shape[3])).astype(np.uint8)
         , np.repeat(bits, images.shape[0])
     )
      ]
 
     # End of problem 1.2
+
+    # Problem 1.3
+    # Mosaic
+    # Arguments: mosaic_order (np.array)
+    mosaic_order = np.array([[6, 11, 13, 3], [8, 16, 1, 9], [12, 14, 2, 7], [4, 15, 10, 5]])
 
     pass
 
