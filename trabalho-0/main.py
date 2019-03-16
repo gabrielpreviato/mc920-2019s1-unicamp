@@ -7,7 +7,6 @@
 #   in the course.
 #   More informations: https://github.com/gabrielpreviato/mc920-2019s1-unicamp/blob/master/trabalho-0/trabalho0.pdf
 #
-import itertools
 import sys
 import glob
 from pathlib import Path
@@ -51,10 +50,10 @@ def main(argv):
 
     # Save the images
     [imageio.imsave(work_path / ("gama-" + str(gama) + "-" + img_name), img) for img_name, img, gama in zip(
-                                                                                            np.tile(np.array([filenames_last.split('/')[-1] for filenames_last in filenames]), gama.size)
-                                                                                          , work_images.reshape((20, 512, 512))
-                                                                                          , np.repeat(gama, images.shape[0])
-                                                                                                     )
+        np.tile(np.array([filenames_last.split('/')[-1] for filenames_last in filenames]), gama.size),
+        work_images.reshape((20, 512, 512)),
+        np.repeat(gama, images.shape[0])
+    )
      ]
 
     # End of Problem 1.1
@@ -82,9 +81,11 @@ def main(argv):
 
     # Save the images
     [imageio.imsave(work_path / ("bit-" + str(bit) + "-" + img_name), img) for img_name, img, bit in zip(
-        np.tile(np.array([filenames_last.split('/')[-1] for filenames_last in filenames]), bits.size)
-        , binary_images.reshape((binary_images.shape[0] * binary_images.shape[1], binary_images.shape[2], binary_images.shape[3])).astype(np.uint8)
-        , np.repeat(bits, images.shape[0])
+        np.tile(np.array([filenames_last.split('/')[-1] for filenames_last in filenames]), bits.size),
+        binary_images.reshape(
+            (binary_images.shape[0] * binary_images.shape[1], binary_images.shape[2], binary_images.shape[3])).astype(
+            np.uint8),
+        np.repeat(bits, images.shape[0])
     )
      ]
 
@@ -94,6 +95,9 @@ def main(argv):
     # Mosaic
     # Arguments: mosaic_order (np.array)
     mosaic_order = np.array([[6, 11, 13, 3], [8, 16, 1, 9], [12, 14, 2, 7], [4, 15, 10, 5]])
+
+    work_images = images[0]
+    work_images.reshape(16, images.shape[2] / 4, images.shape[2] / 4)
 
     pass
 
